@@ -42,16 +42,24 @@ max_date = all_df['dteday'].max()
 with st.sidebar:
     st.sidebar.header("Filter:")
 
-    # Mengambil start date & end date dari date input
-    start_date, end_date = st.date_input(
-        label='Date Filter',min_value=min_date,
+    # Ambil input tanggal
+    date_input = st.date_input(
+        label='Date Filter',
+        min_value=min_date,
         max_value=max_date,
-        value=[min_date, max_date]
+        value=(min_date, max_date)
     )
 
-# Untuk menyimpan nilai filter
+    # Handle jika user hanya pilih 1 tanggal
+    if isinstance(date_input, tuple):
+        start_date, end_date = date_input
+    else:
+        start_date = date_input
+        end_date = max_date
+
+# Gunakan start_date dan end_date di luar sidebar
 main_df = all_df[(all_df['dteday'] >= str(start_date)) & 
-                (all_df['dteday'] <= str(end_date))]
+                 (all_df['dteday'] <= str(end_date))]
 
 # Memanggil fungsi helper
 monthly_rent = create_monthly_rent(main_df)
